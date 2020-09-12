@@ -1,32 +1,17 @@
-const express = require("express");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+//Required Keys for application
 const keys = require("./config/keys");
-
+const express = require("express");
 //Here we are initializing an express server
 const app = express();
+const mongoose = require('mongoose');
+//Connecting to mongoDB Instance
+mongoose.connect(keys.MongoDBURI);
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: keys.GoogleClientID,
-      clientSecret: keys.GoogleClientSecret,
-      callbackURL: "/auth/google/callback",
-    },
-    (accessToken) => {
-      console.log(accessToken);
-    }
-  )
-);
+require('./models/Users')
+require('./services/passport');
+const authRoutes = require('./routes/authRoutes');
 
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
-);
-
-app.get("/auth/google/callback", passport.authenticate("google"));
+authRoutes(app);
 
 //Dynamically changing port between Prod and Dev Environment
 const PORT = process.env.PORT || 5000;
