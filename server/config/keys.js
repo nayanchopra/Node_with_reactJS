@@ -1,4 +1,4 @@
-if (process.env.NODE == "production"){
+if (process.env.NODE_ENV == "production"){
     // Export Production keys
     module.exports = require('./prod');
 }else{
